@@ -1,4 +1,4 @@
-# 🃏 Leitor de Tarô Thoth
+# 🃏 Leitor do Tarô de Thoth
 
 Bem-vindo ao **Leitor de Tarô de Thoth**! Este aplicativo místico permite que você embaralhe e retire cartas do baralho de Tarô de Thoth para revelar insights sobre seu passado, presente e futuro. Seja você um leitor de tarô experiente ou apenas curioso, este aplicativo é sua porta de entrada para a sabedoria do tarô. 🌟
 

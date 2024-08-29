@@ -1,0 +1,1 @@
+# tarot-de-thot-app-nextjs

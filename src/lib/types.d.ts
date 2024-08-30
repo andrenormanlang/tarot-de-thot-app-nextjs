@@ -1,7 +1,7 @@
 // src/lib/types.d.ts
 
 export interface Carta {
-    id: number;
+    id: number | string;
     nome: string;
     número_significado: string;
     descrição_curta: string;

@@ -82,7 +82,7 @@ h2 {
 
 /* Flip card styles */
 .flip-card {
-  background-color: transparent;
+
   width: 13rem;
   height: 20.5rem;
   perspective: 1000px;

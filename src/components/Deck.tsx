@@ -98,9 +98,9 @@ export default function Deck({ initialCards }: DeckProps) {
                   <Image
                     src={card.url_da_imagem || '/fallback-image.jpg'}
                     alt={card.nome || 'Unknown Card'}
+                    className=""
                     width={208}
                     height={340}
-                    className="rounded-lg"
                   />
                 </div>
                 <div className="flip-card-back">

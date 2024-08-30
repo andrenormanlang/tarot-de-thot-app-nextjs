@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Carta, DeckProps } from '@/lib/types';
-import Image from 'next/image';
-import { CardModal } from './CardModal';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Carta, DeckProps } from "@/lib/types";
+import Image from "next/image";
+import { CardModal } from "./CardModal";
 
 export default function Deck({ initialCards }: DeckProps) {
   const [cards, setCards] = useState<Carta[]>(initialCards);
@@ -14,7 +14,7 @@ export default function Deck({ initialCards }: DeckProps) {
   const [modalCard, setModalCard] = useState<Carta | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const cardBackUrl = process.env.NEXT_PUBLIC_CARD_BACK_URL || '/CardBack.jpeg';
+  const cardBackUrl = process.env.NEXT_PUBLIC_CARD_BACK_URL || "/CardBack.jpeg";
 
   const handleShuffle = () => {
     setIsShuffling(true);
@@ -58,7 +58,7 @@ export default function Deck({ initialCards }: DeckProps) {
         disabled={isShuffling || selectedCards.length > 0}
         className="smythe-regular w-64 text-xl sm:text-2xl bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg mb-6 mx-auto block transition duration-300 ease-in-out"
       >
-        {isShuffling ? 'Shuffling...' : 'Shuffle Cards'}
+        {isShuffling ? "Shuffling..." : "Shuffle Cards"}
       </Button>
 
       <div
@@ -68,12 +68,17 @@ export default function Deck({ initialCards }: DeckProps) {
         {cards.map((card, index) => (
           <div
             key={card.id}
-            className={`card-container ${activeCardIndex === index ? 'active' : ''}`}
+            className={`card-container ${
+              activeCardIndex === index ? "active" : ""
+            }`}
             onMouseEnter={() => handleHover(index)}
             onMouseLeave={handleLeave}
-            style={{ '--card-index': index } as React.CSSProperties}
+            style={{ "--card-index": index } as React.CSSProperties}
           >
-            <Button onClick={() => !isShuffling && handleSelectCard(card)} className="bg-transparent">
+            <Button
+              onClick={() => !isShuffling && handleSelectCard(card)}
+              className="bg-transparent"
+            >
               <Image
                 src={cardBackUrl}
                 alt="Card Back"
@@ -86,26 +91,36 @@ export default function Deck({ initialCards }: DeckProps) {
         ))}
       </div>
 
-      <div id="selected-cards" className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-8">
+      <div
+        id="selected-cards"
+        className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-8"
+      >
         {selectedCards.map((card, index) => (
           <div key={card.id} className="flex flex-col items-center">
             <h3 className="smythe-regular text-2xl font-bold mb-4 text-indigo-300">
-              {index === 0 ? 'Mind (Past)' : index === 1 ? 'Body (Present)' : 'Spirit (Future)'}
+              {index === 0
+                ? "Mind (Past)"
+                : index === 1
+                ? "Body (Present)"
+                : "Spirit (Future)"}
             </h3>
             <div className="flip-card">
               <div className="flip-card-inner">
                 <div className="flip-card-front">
-                  <Image
-                    src={card.url_da_imagem || '/fallback-image.jpg'}
-                    alt={card.nome || 'Unknown Card'}
-                    className=""
-                    width={208}
-                    height={340}
-                  />
+                  <div className="w-full h-full relative overflow-hidden rounded-lg">
+                    <Image
+                      src={card.url_da_imagem || "/fallback-image.jpg"}
+                      alt={card.nome || "Unknown Card"}
+                      layout="fill"
+                      objectFit="cover"
+                    />
+                  </div>
                 </div>
                 <div className="flip-card-back">
                   <h2 className="text-xl font-semibold mb-2">{card.nome}</h2>
-                  <p className="text-sm overflow-y-auto flex-grow">{card.descrição_curta}</p>
+                  <p className="text-sm overflow-y-auto flex-grow">
+                    {card.descrição_curta}
+                  </p>
                   <Button
                     onClick={() => openModal(card)}
                     className="mt-4 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition duration-300 ease-in-out"
@@ -128,7 +143,11 @@ export default function Deck({ initialCards }: DeckProps) {
         </Button>
       )}
 
-      <CardModal card={modalCard} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <CardModal
+        card={modalCard}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }

@@ -12,6 +12,9 @@ export default function Deck({ initialCards }: DeckProps) {
   const [selectedCards, setSelectedCards] = useState<Carta[]>([])
   const [isShuffling, setIsShuffling] = useState(false)
 
+  // Card back image URL from the environment variables
+  const cardBackUrl = process.env.NEXT_PUBLIC_CARD_BACK_URL;
+
   const handleShuffle = () => {
     setIsShuffling(true)
     setTimeout(() => {
@@ -21,7 +24,7 @@ export default function Deck({ initialCards }: DeckProps) {
   }
 
   const handleSelectCard = (card: Carta) => {
-    if (selectedCards.length < 3) {
+    if (selectedCards.length < 3 && !selectedCards.includes(card)) {
       setSelectedCards([...selectedCards, card])
     }
   }
@@ -32,7 +35,7 @@ export default function Deck({ initialCards }: DeckProps) {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold mb-6 text-center"></h1>
+      <h1 className="text-4xl font-bold mb-6 text-center">Thoth Tarot Reader</h1>
       <Button onClick={handleShuffle} disabled={isShuffling || selectedCards.length > 0}>
         {isShuffling ? 'Shuffling...' : 'Shuffle Cards'}
       </Button>
@@ -44,7 +47,7 @@ export default function Deck({ initialCards }: DeckProps) {
             onClick={() => !isShuffling && handleSelectCard(card)}
           >
             <Image 
-              src={card.url_da_imagem} 
+              src={selectedCards.includes(card) ? card.url_da_imagem : cardBackUrl} 
               alt={card.nome} 
               width={300}  // Adjust these values as needed
               height={450}  // Adjust these values as needed

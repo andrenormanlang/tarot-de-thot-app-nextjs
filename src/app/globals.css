@@ -49,10 +49,40 @@ h2 {
   font-family: 'Old Standard TT', serif;
 }
 
+p {
+  font-size: 1.2rem;
+  font-family: 'Old Standard TT', serif;
+}
+
+.custom-button-1 {
+  border-radius: 0.5rem !important;
+  font-family: 'Smythe', serif;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.custom-button-2 {
+  border-radius: 0.7rem !important;
+  font-family: 'Smythe', serif;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.custom-button-3 {
+  border-radius: 0.7rem !important;
+  font-family: 'Old Standard TT', serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+
+.custom-border-radius {
+  border-radius: 0.7rem;
+}
+
 /* Card styles */
 .card-container {
   position: relative;
-  margin-right: -60px;
+  margin-right: -70px;
   transition: transform 0.3s ease, z-index 0.3s ease;
 
 }

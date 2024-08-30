@@ -1,18 +1,18 @@
 "use client";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Carta, DeckProps } from "@/lib/types";
-import Image from "next/image";
 import { CardModal } from "./CardModal";
+import Image from "next/image";
+import { useState } from "react";
+import { Carta, DeckProps } from "@/lib/types";
+import { Button } from "./ui/button";
 
 export default function Deck({ initialCards }: DeckProps) {
   const [cards, setCards] = useState<Carta[]>(initialCards);
-  const [activeCardIndex, setActiveCardIndex] = useState<number | null>(null);
   const [selectedCards, setSelectedCards] = useState<Carta[]>([]);
   const [isShuffling, setIsShuffling] = useState(false);
   const [modalCard, setModalCard] = useState<Carta | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [activeCardIndex, setActiveCardIndex] = useState<number | null>(null); // Add this line
 
   const cardBackUrl = process.env.NEXT_PUBLIC_CARD_BACK_URL || "/CardBack.jpeg";
 
@@ -31,11 +31,11 @@ export default function Deck({ initialCards }: DeckProps) {
   };
 
   const handleHover = (index: number) => {
-    setActiveCardIndex(index);
+    setActiveCardIndex(index); // Update active card index when hovered
   };
 
   const handleLeave = () => {
-    setActiveCardIndex(null);
+    setActiveCardIndex(null); // Reset active card index when hover ends
   };
 
   const handleReset = () => {
@@ -49,17 +49,15 @@ export default function Deck({ initialCards }: DeckProps) {
 
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8 bg-gray-900 text-gray-100">
-      <h1 className="text-4xl sm:text-5xl font-bold mb-6 text-center text-purple-300 smythe-regular">
-        Thoth Tarot Reader
-      </h1>
-
-      <Button
-        onClick={handleShuffle}
-        disabled={isShuffling || selectedCards.length > 0}
-        className="smythe-regular w-64 text-xl sm:text-2xl bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg mb-6 mx-auto block transition duration-300 ease-in-out"
-      >
-        {isShuffling ? "Shuffling..." : "Shuffle Cards"}
-      </Button>
+      <div className="flex justify-center mb-8">
+        <Button
+          onClick={handleShuffle}
+          disabled={isShuffling || selectedCards.length > 0}
+          className="bg-indigo-500 hover:bg-indigo-900 rounded-lg custom-button-1"
+        >
+          {isShuffling ? "Shuffling..." : "Shuffle Cards"}
+        </Button>
+      </div>
 
       <div
         id="shuffled-cards"
@@ -75,9 +73,9 @@ export default function Deck({ initialCards }: DeckProps) {
             onMouseLeave={handleLeave}
             style={{ "--card-index": index } as React.CSSProperties}
           >
-            <Button
+            <div
               onClick={() => !isShuffling && handleSelectCard(card)}
-              className="bg-transparent"
+              className="cursor-pointer"
             >
               <Image
                 src={cardBackUrl}
@@ -86,7 +84,7 @@ export default function Deck({ initialCards }: DeckProps) {
                 height={80}
                 className="object-cover rounded-lg"
               />
-            </Button>
+            </div>
           </div>
         ))}
       </div>
@@ -97,12 +95,12 @@ export default function Deck({ initialCards }: DeckProps) {
       >
         {selectedCards.map((card, index) => (
           <div key={card.id} className="flex flex-col items-center">
-            <h3 className="smythe-regular text-2xl font-bold mb-4 text-indigo-300">
+            <h3 className="smythe-regular text-2xl font-bold mb-4 text-indigo-500">
               {index === 0
-                ? "Mind (Past)"
+                ? "Mente (Passado)"
                 : index === 1
-                ? "Body (Present)"
-                : "Spirit (Future)"}
+                ? "Corpo (Presente)"
+                : "Espirito (Futuro)"}
             </h3>
             <div className="flip-card">
               <div className="flip-card-inner">
@@ -118,12 +116,13 @@ export default function Deck({ initialCards }: DeckProps) {
                 </div>
                 <div className="flip-card-back">
                   <h2 className="text-xl font-semibold mb-2">{card.nome}</h2>
-                  <p className="text-sm overflow-y-auto flex-grow">
+                  <p className="text-center text-xs overflow-y-auto flex-grow">
                     {card.descrição_curta}
                   </p>
-                  <Button
+                  <Button 
                     onClick={() => openModal(card)}
-                    className="mt-4 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition duration-300 ease-in-out"
+                    className="mt-4 bg-slate-500 hover:bg-slate-900 custom-button-2"
+                  
                   >
                     View Full Description
                   </Button>
@@ -135,12 +134,12 @@ export default function Deck({ initialCards }: DeckProps) {
       </div>
 
       {selectedCards.length === 3 && (
-        <Button
+        <div className="flex justify-center mt-12">
+          <Button 
           onClick={handleReset}
-          className="smythe-regular w-64 mt-12 text-xl sm:text-2xl bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg mx-auto block transition duration-300 ease-in-out"
-        >
-          New Reading
-        </Button>
+          className="bg-amber-950 hover:bg-amber-600 rounded-lg custom-button-3"
+          >New Reading</Button>
+        </div>
       )}
 
       <CardModal

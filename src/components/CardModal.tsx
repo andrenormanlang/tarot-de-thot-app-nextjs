@@ -13,7 +13,7 @@ export const CardModal: React.FC<CardModalProps> = ({ card, isOpen, onClose }) =
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-gray-900 text-purple-400 max-w-3xl w-full sm:w-11/12 md:w-4/5 lg:w-3/4 xl:w-2/3 mx-auto max-h-[80vh] overflow-y-auto">
+      <DialogContent className="bg-gray-900 text-purple-400 max-w-3xl w-full sm:w-11/12 md:w-4/5 lg:w-3/4 xl:w-2/3 mx-auto max-h-[80vh] overflow-y-auto rounded-lg">
         <DialogHeader>
           <DialogTitle className="smythe-regular text-2xl md:text-3xl w-full text-center">{card.nome}</DialogTitle>
         </DialogHeader>
@@ -38,4 +38,3 @@ export const CardModal: React.FC<CardModalProps> = ({ card, isOpen, onClose }) =
     </Dialog>
   );
 };
-

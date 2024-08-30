@@ -82,13 +82,13 @@ p {
 /* Card styles */
 .card-container {
   position: relative;
-  margin-right: -70px;
+  margin-right: -37px; /* Adjusted to tightly overlap the cards */
   transition: transform 0.3s ease, z-index 0.3s ease;
-
 }
 
 .card-container:hover {
-  transform: translateY(-20px) scale(1.1);
+  transform: translateY(-20px); /* Move the card up on hover */
+  z-index: 10; /* Bring the card to the front */
 }
 
 .card-container img {

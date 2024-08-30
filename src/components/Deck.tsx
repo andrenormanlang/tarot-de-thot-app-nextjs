@@ -5,23 +5,23 @@ import Image from "next/image";
 import { useState } from "react";
 import { Carta, DeckProps } from "@/lib/types";
 import { Button } from "./ui/button";
+import ShufflingDeck from "@/helpers/ShufflingDeck";
+import LoadingSpinner from "@/helpers/LoadingSpinner";
+import { useFetchCard } from "@/hooks/useGetCards";
 
 export default function Deck({ initialCards }: DeckProps) {
   const [cards, setCards] = useState<Carta[]>(initialCards);
   const [selectedCards, setSelectedCards] = useState<Carta[]>([]);
   const [isShuffling, setIsShuffling] = useState(false);
-  const [modalCard, setModalCard] = useState<Carta | null>(null);
+  const [modalCardId, setModalCardId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [activeCardIndex, setActiveCardIndex] = useState<number | null>(null); // Add this line
 
   const cardBackUrl = process.env.NEXT_PUBLIC_CARD_BACK_URL || "/CardBack.jpeg";
 
+  const { data: modalCard, isLoading } = useFetchCard(modalCardId);
+
   const handleShuffle = () => {
     setIsShuffling(true);
-    setTimeout(() => {
-      setCards([...cards].sort(() => Math.random() - 0.5));
-      setIsShuffling(false);
-    }, 2000);
   };
 
   const handleSelectCard = (card: Carta) => {
@@ -30,22 +30,15 @@ export default function Deck({ initialCards }: DeckProps) {
     }
   };
 
-  const handleHover = (index: number) => {
-    setActiveCardIndex(index); // Update active card index when hovered
-  };
-
-  const handleLeave = () => {
-    setActiveCardIndex(null); // Reset active card index when hover ends
-  };
-
   const handleReset = () => {
     setSelectedCards([]);
   };
 
   const openModal = (card: Carta) => {
-    setModalCard(card);
+    setModalCardId(card.id.toString()); // Convert the card ID to a string
     setIsModalOpen(true);
   };
+  
 
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8 bg-gray-900 text-gray-100">
@@ -59,35 +52,16 @@ export default function Deck({ initialCards }: DeckProps) {
         </Button>
       </div>
 
-      <div
-        id="shuffled-cards"
-        className="relative h-36 sm:h-48 mt-2 flex justify-center items-center overflow-x-auto mx-auto"
-      >
-        {cards.map((card, index) => (
-          <div
-            key={card.id}
-            className={`card-container ${
-              activeCardIndex === index ? "active" : ""
-            }`}
-            onMouseEnter={() => handleHover(index)}
-            onMouseLeave={handleLeave}
-            style={{ "--card-index": index } as React.CSSProperties}
-          >
-            <div
-              onClick={() => !isShuffling && handleSelectCard(card)}
-              className="cursor-pointer"
-            >
-              <Image
-                src={cardBackUrl}
-                alt="Card Back"
-                width={50}
-                height={80}
-                className="object-cover rounded-lg"
-              />
-            </div>
-          </div>
-        ))}
-      </div>
+      <ShufflingDeck
+        cards={cards}
+        cardBackUrl={cardBackUrl}
+        isShuffling={isShuffling}
+        onShuffleComplete={(newCards) => {
+          setCards(newCards);
+          setIsShuffling(false);
+        }}
+        onSelectCard={handleSelectCard}
+      />
 
       <div
         id="selected-cards"
@@ -119,10 +93,9 @@ export default function Deck({ initialCards }: DeckProps) {
                   <p className="text-center text-xs overflow-y-auto flex-grow">
                     {card.descrição_curta}
                   </p>
-                  <Button 
+                  <Button
                     onClick={() => openModal(card)}
                     className="mt-4 bg-slate-500 hover:bg-slate-900 custom-button-2"
-                  
                   >
                     View Full Description
                   </Button>
@@ -135,18 +108,31 @@ export default function Deck({ initialCards }: DeckProps) {
 
       {selectedCards.length === 3 && (
         <div className="flex justify-center mt-12">
-          <Button 
-          onClick={handleReset}
-          className="bg-amber-950 hover:bg-amber-600 rounded-lg custom-button-3"
-          >New Reading</Button>
+          <Button
+            onClick={handleReset}
+            className="bg-amber-950 hover:bg-amber-600 rounded-lg custom-button-3"
+          >
+            New Reading
+          </Button>
         </div>
       )}
 
       <CardModal
-        card={modalCard}
+        card={modalCard} // Card data will be null if loading
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-      />
+      >
+        {isLoading ? (
+          <LoadingSpinner />
+        ) : (
+          modalCard && (
+            <div>
+              <h2 className="text-xl font-semibold mb-2">{modalCard.nome}</h2>
+              <p>{modalCard.descrição_longa}</p>
+            </div>
+          )
+        )}
+      </CardModal>
     </div>
   );
 }

@@ -76,11 +76,11 @@ export default function Deck({ initialCards }: DeckProps) {
             <AnimatePresence>
               {selectedCards[index] ? (
                 <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
                   transition={{ duration: 0.5 }}
-                  className="flip-card"
+                  className="card-container"
                   onClick={() => openModal(selectedCards[index])}
                 >
                   <div className="flip-card-inner">
@@ -110,10 +110,11 @@ export default function Deck({ initialCards }: DeckProps) {
                 </motion.div>
               ) : (
                 <motion.div
-                  initial={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
+                  initial={{ opacity: 1, scale: 1 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
                   transition={{ duration: 0.5 }}
-                  className="w-64 h-96 relative overflow-hidden rounded-lg"
+                  className="card-container"
                 >
                   <Image
                     src={placeholderUrl}

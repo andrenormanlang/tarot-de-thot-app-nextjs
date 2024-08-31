@@ -102,6 +102,15 @@ p {
   }
 }
 
+.card-container {
+  width: 13rem; 
+  height: 20.5rem;
+  border-radius: 20px; 
+  position: relative;
+  overflow: hidden;
+}
+
+
 /* Flip card styles */
 .flip-card {
   width: 13rem;

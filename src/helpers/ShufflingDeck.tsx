@@ -1,7 +1,14 @@
-import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Carta } from '@/lib/types';
+
+interface ShuffledCard extends Carta {
+  randomOffset?: {
+    x: number;
+    y: number;
+    rotate: number;
+  };
+}
 
 interface ShufflingDeckProps {
   cards: Carta[];
@@ -18,59 +25,56 @@ const ShufflingDeck: React.FC<ShufflingDeckProps> = ({
   onShuffleComplete,
   onSelectCard,
 }) => {
-  const [positions, setPositions] = useState<number[]>([]);
+  const [shuffledCards, setShuffledCards] = useState<ShuffledCard[]>(cards);
 
   useEffect(() => {
     if (isShuffling) {
-      const newPositions = cards.map((_, index) => index);
-      setPositions(newPositions);
-
-      const animation = setInterval(() => {
-        setPositions((prevPositions) => {
-          const shuffled = [...prevPositions].sort(() => Math.random() - 0.5);
-          return shuffled;
-        });
+      const shuffleAnimation = setInterval(() => {
+        setShuffledCards(cards => 
+          cards.map(card => ({
+            ...card,
+            randomOffset: {
+              x: Math.random() * 100 - 50,
+              y: Math.random() * 100 - 50,
+              rotate: Math.random() * 180 - 90
+            }
+          }))
+        );
       }, 200);
 
       setTimeout(() => {
-        clearInterval(animation);
-        const shuffledCards = positions.map((pos) => cards[pos]);
-        onShuffleComplete(shuffledCards);
+        clearInterval(shuffleAnimation);
+        setShuffledCards(cards => cards.map(({ randomOffset, ...card }) => card));
+        onShuffleComplete(cards);
       }, 2000);
     }
-  }, [isShuffling, cards, onShuffleComplete, positions]);
+  }, [isShuffling, onShuffleComplete, cards]);
 
   return (
-    <div className="relative h-36 sm:h-48 mt-2 flex justify-center items-center overflow-hidden mx-auto">
-      <AnimatePresence>
-        {cards.map((card, index) => (
-          <motion.div
-            key={card.id}
-            className="card-container"
-            initial={{ scale: 1, rotateY: 0 }}
-            animate={{
-              x: isShuffling ? Math.random() * 100 - 50 : index * 20 - (cards.length - 1) * 10, // Adjusted for tighter overlap
-              y: isShuffling ? Math.random() * 100 - 50 : 0,
-              rotateY: isShuffling ? [0, 180, 360] : 0,
-              zIndex: positions[index] || index,
-            }}
-            transition={{
-              duration: 0.5,
-              repeat: isShuffling ? 3 : 0,
-              repeatType: "mirror",
-            }}
-            onClick={() => !isShuffling && onSelectCard(card)}
-          >
-            <Image
-              src={cardBackUrl}
-              alt="Card Back"
-              width={50}
-              height={80}
-              className="object-cover rounded-lg"
-            />
-          </motion.div>
-        ))}
-      </AnimatePresence>
+    <div className="relative h-48 mt-2 flex justify-center items-center overflow-hidden mx-auto">
+      {shuffledCards.map((card, index) => (
+        <div
+          key={card.id}
+          className={`absolute transition-all duration-300 ease-in-out
+                      hover:-translate-y-5 hover:z-50`}
+          style={{
+            left: `calc(50% + ${index * 20 - (cards.length - 1) * 10}px)`,
+            zIndex: index,
+            transform: card.randomOffset
+              ? `translate(${card.randomOffset.x}px, ${card.randomOffset.y}px) rotate(${card.randomOffset.rotate}deg)`
+              : 'none',
+          }}
+          onClick={() => !isShuffling && onSelectCard(card)}
+        >
+          <Image
+            src={cardBackUrl}
+            alt="Card Back"
+            width={50}
+            height={80}
+            className="object-cover rounded-lg"
+          />
+        </div>
+      ))}
     </div>
   );
 };

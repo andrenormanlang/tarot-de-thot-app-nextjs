@@ -48,7 +48,7 @@ export default function Deck({ initialCards }: DeckProps) {
           disabled={isShuffling || selectedCards.length > 0}
           className="bg-indigo-500 hover:bg-indigo-900 rounded-lg custom-button-1"
         >
-          {isShuffling ? "Shuffling..." : "Shuffle Cards"}
+          {isShuffling ? "Embaralhando..." : "Embaralhar Deck"}
         </Button>
       </div>
 
@@ -112,7 +112,7 @@ export default function Deck({ initialCards }: DeckProps) {
             onClick={handleReset}
             className="bg-amber-950 hover:bg-amber-600 rounded-lg custom-button-3"
           >
-            New Reading
+            Nova Tiragem?
           </Button>
         </div>
       )}

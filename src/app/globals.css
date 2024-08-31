@@ -73,13 +73,40 @@ p {
   font-family: 'Old Standard TT', serif;
   font-weight: 700;
   font-size: 1.5rem;
+  padding: 0.5rem 1rem;
 }
 
 .custom-border-radius {
   border-radius: 0.7rem;
 }
 
-/* Card styles */
+/* Card Deck and Shuffling */
+@layer utilities {
+  .animate-shuffle {
+    animation: shuffle 0.5s ease-in-out infinite;
+  }
+}
+
+@keyframes shuffle {
+  0%, 100% { 
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(var(--shuffle-x1), var(--shuffle-y1)) rotate(var(--shuffle-rotate1));
+  }
+  50% {
+    transform: translate(var(--shuffle-x2), var(--shuffle-y2)) rotate(var(--shuffle-rotate2));
+  }
+  75% {
+    transform: translate(var(--shuffle-x3), var(--shuffle-y3)) rotate(var(--shuffle-rotate3));
+  }
+}
+
+.shuffling {
+  animation: shuffle 0.5s ease-in-out infinite;
+}
+
+
 .card-container {
   position: relative;
   margin-right: -37px; /* Adjusted to tightly overlap the cards */
@@ -88,7 +115,12 @@ p {
 
 .card-container:hover {
   transform: translateY(-20px); /* Move the card up on hover */
-  z-index: 10; /* Bring the card to the front */
+  /* Bring the card to the front */
+}
+
+#shuffled-cards .card-container:hover {
+  transform: translateY(-20px);
+ /* Increase z-index and use !important to ensure it takes precedence */
 }
 
 .card-container img {

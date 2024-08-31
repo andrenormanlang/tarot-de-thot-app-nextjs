@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { CardModal } from "./CardModal";
 import Image from "next/image";
@@ -8,6 +8,7 @@ import { Button } from "./ui/button";
 import ShufflingDeck from "@/helpers/ShufflingDeck";
 import LoadingSpinner from "@/helpers/LoadingSpinner";
 import { useFetchCard } from "@/hooks/useGetCards";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Deck({ initialCards }: DeckProps) {
   const [cards, setCards] = useState<Carta[]>(initialCards);
@@ -17,6 +18,7 @@ export default function Deck({ initialCards }: DeckProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const cardBackUrl = process.env.NEXT_PUBLIC_CARD_BACK_URL || "/CardBack.jpeg";
+  const placeholderUrl = "/question-mark.svg";
 
   const { data: modalCard, isLoading } = useFetchCard(modalCardId);
 
@@ -35,13 +37,13 @@ export default function Deck({ initialCards }: DeckProps) {
   };
 
   const openModal = (card: Carta) => {
-    setModalCardId(card.id.toString()); // Convert the card ID to a string
+    setModalCardId(card.id.toString());
     setIsModalOpen(true);
   };
-  
 
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8 bg-gray-900 text-gray-100">
+      {/* Shuffle button */}
       <div className="flex justify-center mb-8">
         <Button
           onClick={handleShuffle}
@@ -52,6 +54,7 @@ export default function Deck({ initialCards }: DeckProps) {
         </Button>
       </div>
 
+      {/* Shuffling deck */}
       <ShufflingDeck
         cards={cards}
         cardBackUrl={cardBackUrl}
@@ -63,53 +66,69 @@ export default function Deck({ initialCards }: DeckProps) {
         onSelectCard={handleSelectCard}
       />
 
-      <div
-        id="selected-cards"
-        className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-8"
-      >
-        {selectedCards.map((card, index) => (
-          <div 
-            key={card.id} 
-            className="flex flex-col items-center transition-transform duration-300 ease-in-out transform hover:-translate-y-10 hover:z-30 -mr-8 last:mr-0 cursor-pointer" 
-            onClick={() => handleSelectCard(card)}        
-          >
+      {/* Selected cards */}
+      <div id="selected-cards" className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-8">
+        {["Mente (Passado)", "Corpo (Presente)", "Espirito (Futuro)"].map((title, index) => (
+          <div key={index} className="flex flex-col items-center">
             <h3 className="smythe-regular text-2xl font-bold mb-4 text-indigo-500">
-              {index === 0
-                ? "Mente (Passado)"
-                : index === 1
-                ? "Corpo (Presente)"
-                : "Espirito (Futuro)"}
+              {title}
             </h3>
-            <div className="flip-card">
-              <div className="flip-card-inner">
-                <div className="flip-card-front">
-                  <div className="w-full h-full relative overflow-hidden rounded-lg">
-                    <Image
-                      src={card.url_da_imagem || "/fallback-image.jpg"}
-                      alt={card.nome || "Unknown Card"}
-                      layout="fill"
-                      objectFit="cover"
-                    />
+            <AnimatePresence>
+              {selectedCards[index] ? (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="flip-card"
+                  onClick={() => openModal(selectedCards[index])}
+                >
+                  <div className="flip-card-inner">
+                    <div className="flip-card-front">
+                      <div className="w-full h-full relative overflow-hidden rounded-lg">
+                        <Image
+                          src={selectedCards[index].url_da_imagem || "/fallback-image.jpg"}
+                          alt={selectedCards[index].nome || "Unknown Card"}
+                          layout="fill"
+                          objectFit="cover"
+                        />
+                      </div>
+                    </div>
+                    <div className="flip-card-back">
+                      <h2 className="text-xl font-semibold mb-2">{selectedCards[index].nome}</h2>
+                      <p className="text-center text-xs overflow-y-auto flex-grow">
+                        {selectedCards[index].descrição_curta}
+                      </p>
+                      <Button
+                        onClick={() => openModal(selectedCards[index])}
+                        className="mt-4 bg-slate-500 hover:bg-slate-900 custom-button-2"
+                      >
+                        View Full Description
+                      </Button>
+                    </div>
                   </div>
-                </div>
-                <div className="flip-card-back">
-                  <h2 className="text-xl font-semibold mb-2">{card.nome}</h2>
-                  <p className="text-center text-xs overflow-y-auto flex-grow">
-                    {card.descrição_curta}
-                  </p>
-                  <Button
-                    onClick={() => openModal(card)}
-                    className="mt-4 bg-slate-500 hover:bg-slate-900 custom-button-2"
-                  >
-                    View Full Description
-                  </Button>
-                </div>
-              </div>
-            </div>
+                </motion.div>
+              ) : (
+                <motion.div
+                  initial={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="w-64 h-96 relative overflow-hidden rounded-lg"
+                >
+                  <Image
+                    src={placeholderUrl}
+                    alt="Card Placeholder"
+                    layout="fill"
+                    objectFit="contain"
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         ))}
       </div>
 
+      {/* Reset button */}
       {selectedCards.length === 3 && (
         <div className="flex justify-center mt-12">
           <Button
@@ -121,8 +140,9 @@ export default function Deck({ initialCards }: DeckProps) {
         </div>
       )}
 
+      {/* Card modal */}
       <CardModal
-        card={modalCard} // Card data will be null if loading
+        card={modalCard}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       >

@@ -57,8 +57,7 @@ const ShufflingDeck: React.FC<ShufflingDeckProps> = ({
       {shuffledCards.map((card, index) => (
         <div
           key={card.id}
-          className="absolute transition-all duration-300 ease-in-out
-             hover:translate-y-[-10px] hover:z-50"
+          className="absolute"
           style={{
             left: `calc(50% + ${index * 20 - (cards.length - 1) * 10}px)`,
             zIndex: index,
@@ -73,7 +72,7 @@ const ShufflingDeck: React.FC<ShufflingDeckProps> = ({
             alt="Card Back"
             width={50}
             height={80}
-            className="object-cover rounded-lg items-center transition-transform duration-300 ease-in-out transform hover:-translate-y-10 hover:z-30 -mr-8 last:mr-0 cursor-pointer"
+            className=" duration-1000 ease-in-out transform hover:-translate-y-14 last:mr-0 custom-border-radius"
           />
         </div>
       ))}

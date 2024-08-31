@@ -104,8 +104,8 @@ p {
 
 .card-container {
   width: 13rem; 
-  height: 20.5rem;
-  border-radius: 20px; 
+  height: 20rem;
+  border-radius: 1.5rem; 
   position: relative;
   overflow: hidden;
 }

@@ -102,46 +102,6 @@ p {
   }
 }
 
-.shuffling {
-  animation: shuffle 0.5s ease-in-out infinite;
-}
-
-
-.card-container {
-  position: relative;
-  margin-right: -37px; /* Adjusted to tightly overlap the cards */
-  transition: transform 0.3s ease, z-index 0.3s ease;
-}
-
-.card-container:hover {
-  transform: translateY(-20px); /* Move the card up on hover */
-  /* Bring the card to the front */
-}
-
-#shuffled-cards .card-container:hover {
-  transform: translateY(-20px);
- /* Increase z-index and use !important to ensure it takes precedence */
-}
-
-.card-container img {
-  width: 50px;
-  height: auto;
-}
-
-#shuffled-cards {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 200px;
-  overflow-x: hidden;
-}
-
-#selected-cards {
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.5rem;
-
-}
-
 /* Flip card styles */
 .flip-card {
   width: 13rem;

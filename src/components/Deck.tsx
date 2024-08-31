@@ -68,7 +68,11 @@ export default function Deck({ initialCards }: DeckProps) {
         className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-8"
       >
         {selectedCards.map((card, index) => (
-          <div key={card.id} className="flex flex-col items-center">
+          <div 
+            key={card.id} 
+            className="flex flex-col items-center transition-transform duration-300 ease-in-out transform hover:-translate-y-10 hover:z-30 -mr-8 last:mr-0 cursor-pointer" 
+            onClick={() => handleSelectCard(card)}        
+          >
             <h3 className="smythe-regular text-2xl font-bold mb-4 text-indigo-500">
               {index === 0
                 ? "Mente (Passado)"

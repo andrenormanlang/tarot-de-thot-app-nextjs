@@ -9,6 +9,8 @@ import { Carta, DeckProps } from "@/lib/types";
 import ShufflingDeck from "@/helpers/ShufflingDeck";
 import LoadingSpinner from "@/helpers/LoadingSpinner";
 import { fetchCardById } from "@/lib/api";
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 export default function Deck({ initialCards }: DeckProps) {
   const [cards, setCards] = useState<Carta[]>(initialCards);
@@ -56,6 +58,7 @@ export default function Deck({ initialCards }: DeckProps) {
   }, [isModalOpen]);
 
   return (
+    <DndProvider backend={HTML5Backend}>
     <div className="container mx-auto max-w-4xl px-4 py-8 bg-gray-900 text-gray-100">
       {/* Shuffle button */}
       <div className="flex justify-center mb-8">
@@ -154,7 +157,7 @@ export default function Deck({ initialCards }: DeckProps) {
                       src={placeholderUrl}
                       alt="Card Placeholder"
                       layout="fill"
-                      objectFit="contain"
+                      objectFit="fill"
                     />
                   </motion.div>
                 )}
@@ -196,5 +199,6 @@ export default function Deck({ initialCards }: DeckProps) {
         )}
       </CardModal>
     </div>
+    </DndProvider>
   );
 }

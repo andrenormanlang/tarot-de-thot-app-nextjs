@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { Button } from "./ui/button";
@@ -8,7 +8,7 @@ import { CardModal } from "./CardModal";
 import { Carta, DeckProps } from "@/lib/types";
 import ShufflingDeck from "@/helpers/ShufflingDeck";
 import LoadingSpinner from "@/helpers/LoadingSpinner";
-import { useFetchCard } from "@/hooks/useGetCards";
+import { fetchCardById } from "@/lib/api";
 
 export default function Deck({ initialCards }: DeckProps) {
   const [cards, setCards] = useState<Carta[]>(initialCards);
@@ -16,11 +16,12 @@ export default function Deck({ initialCards }: DeckProps) {
   const [isShuffling, setIsShuffling] = useState(false);
   const [modalCardId, setModalCardId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalCard, setModalCard] = useState<Carta | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const cardBackUrl = process.env.NEXT_PUBLIC_CARD_BACK_URL || "/CardBack.jpeg";
   const placeholderUrl = "/question-mark.svg";
-
-  const { data: modalCard, isLoading } = useFetchCard(modalCardId);
 
   const handleShuffle = () => setIsShuffling(true);
 
@@ -32,10 +33,27 @@ export default function Deck({ initialCards }: DeckProps) {
 
   const handleReset = () => setSelectedCards([]);
 
-  const openModal = (card: Carta) => {
+  const openModal = async (card: Carta) => {
     setModalCardId(card.id.toString());
     setIsModalOpen(true);
+    setIsLoading(true);
+    setError(null);
+    try {
+      const fetchedCard = await fetchCardById(card.id.toString());
+      setModalCard(fetchedCard);
+    } catch (error) {
+      setError('Failed to fetch card');
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  useEffect(() => {
+    if (!isModalOpen) {
+      setModalCardId(null);
+      setModalCard(null);
+    }
+  }, [isModalOpen]);
 
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8 bg-gray-900 text-gray-100">
@@ -166,6 +184,8 @@ export default function Deck({ initialCards }: DeckProps) {
       >
         {isLoading ? (
           <LoadingSpinner />
+        ) : error ? (
+          <p>{error}</p>
         ) : (
           modalCard && (
             <div>

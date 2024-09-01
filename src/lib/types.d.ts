@@ -21,6 +21,7 @@ export interface Carta {
     determinação?: string[];
     palavras_chave?: string[];
     revelação?: string;
+    isFlipped?: boolean;
   }
   
   export interface DeckProps {
